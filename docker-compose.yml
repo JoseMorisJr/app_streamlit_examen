@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8501:8501"  # Mapea el puerto del contenedor al puerto de tu máquina local
+    volumes:
+      - .:/app  # Opcional: Monta el directorio actual en el contenedor (útil para desarrollo)
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

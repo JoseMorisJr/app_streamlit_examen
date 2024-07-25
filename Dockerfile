@@ -1,6 +1,6 @@
 
 # Usa una imagen base de CUDA
-FROM nvidia/cuda:11.0.3-base-ubuntu20.04
+FROM pytorch/pytorch:2.1.0-cuda11.8-cudnn8-runtime
 
 # Actualiza e instala dependencias necesarias
 RUN apt-get update && apt-get install -y \
@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y \
 
 
 # Instala PyTorch y otras dependencias en una versión compatible con CUDA 11.0
-RUN pip3 install torch==1.10.0+cu113 torchvision==0.11.1+cu113 -f https://download.pytorch.org/whl/torch_stable.html
+RUN pip3 install torchvision==0.14.1
 
 # Instalar NVIDIA Container Toolkit
 RUN distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
@@ -28,8 +28,6 @@ RUN distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
 # Configurar el runtime
 ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
-
-RUN pip install --upgrade huggingface_hub
 
 # Establece el directorio de trabajo
 WORKDIR /app

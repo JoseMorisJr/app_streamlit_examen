@@ -40,15 +40,17 @@ def predict_image(image_path):
 def generacion_imagen(promnt):
     model = "CompVis/stable-diffusion-v1-1"
     image_path_1 = "./image_temp/temporal.png"
-    pipe = StableDiffusionPipeline.from_pretrained(model,
+    
+    scheduler = DDPMScheduler(beta_start=0.001, beta_end=0.005,
+                            beta_schedule="scaled_linear", clip_sample = False)
+    
+    pipe = StableDiffusionPipeline.from_pretrained(model, scheduler=scheduler,
                                         variant="fp16", torch_dtype=torch.float16)
     pipe.to("cuda")
-    scheduler = DDPMScheduler(beta_start=0.001, beta_end=0.005,
-                            beta_schedule="scaled_linear")
+    
     with autocast("cuda"):
         image = pipe(
-            promnt,
-            scheduler=scheduler,
+            promnt, 
             num_inference_steps=30,
             guidance_scale=5,
         ).images[0]

@@ -25,6 +25,7 @@ RUN distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
     && apt-get install -y nvidia-container-toolkit \
     && apt-get clean
 
+
 # Configurar el runtime
 ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES compute,utility

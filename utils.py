@@ -5,9 +5,14 @@ from transformers import AutoFeatureExtractor, AutoModelForImageClassification
 import torch
 import torchvision.transforms as transforms
 from torch import autocast
+import os
 
+
+torch.cuda.empty_cache()
  
 def predict_image(image_path):
+    # Liberar memoria antes de la carga del modelo
+    torch.cuda.empty_cache()
 
     # Cargar el modelo y el extractor de características
     model_name = "microsoft/resnet-50"
@@ -38,7 +43,11 @@ def predict_image(image_path):
 
 
 def generacion_imagen(promnt):
-    model = "CompVis/stable-diffusion-v1-1"
+
+    # Liberar memoria antes de la carga del modelo
+    torch.cuda.empty_cache()
+
+    model = "CompVis/stable-diffusion-v1-4"
     image_path_1 = "./image_temp/temporal.png"
     
     scheduler = DDPMScheduler(beta_start=0.001, beta_end=0.005,
@@ -51,18 +60,17 @@ def generacion_imagen(promnt):
     with autocast("cuda"):
         image = pipe(
             promnt, 
-            num_inference_steps=30,
-            guidance_scale=5,
+            num_inference_steps=15,
+            guidance_scale=3.5,
+            num_images_per_prompt=1,
+            height=512,
+            width=512
         ).images[0]
     image.save(image_path_1)
+
+     # Liberar memoria después de la generación de imagen
+    del pipe, scheduler, image
+    torch.cuda.empty_cache()
+
     return image_path_1
-
-
-    # # Abre la imagen usando PIL
-    # image_open = Image.open(image_path_1)
-
-    # # Muestra la imagen en Streamlit
-    # st.image(image_open, caption=promnt, use_column_width=True)
-
-
 

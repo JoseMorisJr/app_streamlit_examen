@@ -4,9 +4,9 @@ services:
   app:
     build: .
     ports:
-      - "8501:8501"  # Mapea el puerto del contenedor al puerto de tu máquina local
+      - "8501:8501" 
     volumes:
-      - .:/app  # Opcional: Monta el directorio actual en el contenedor (útil para desarrollo)
+      - .:/app  
     deploy:
       resources:
         reservations:
